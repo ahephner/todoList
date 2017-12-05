@@ -1,3 +1,5 @@
+
+
 $(document).ready(function(){
     $.getJSON('http://localhost:3000/api/todos')
         .then(addTodos)
@@ -7,6 +9,13 @@ $(document).ready(function(){
             createTodo();
         }
     })    
+
+    //due to that the list class is on the page a load time we target
+    //it for the click pass 'span' as what individual we are targeting on the class
+    //common issue with single page due to when the span is added after page loaded
+    $('.list').on('click', 'span', function(){
+       removeTodo($(this).parent());
+    })
 
 
 });
@@ -19,7 +28,9 @@ function addTodos(todos){
 }
 
 function addTodo(todo){
-    var newTodo = $('<li class="task">' + todo.name  + '</li>')
+    var newTodo = $('<li class="task">' + todo.name  + '<span>X</span></li>')
+    //this allows us to assign new data when the new li is made so we can reference it else where
+    newTodo.data('id', todo._id );
     if(todo.completed){
         newTodo.addClass('done');
     }
@@ -40,3 +51,15 @@ $.post('http://localhost:3000/api/todos', {name: userInput})
     })
 }
 
+function removeTodo(todo){
+    var itemId = todo.data('id');
+    var deleteURL = 'api/todos/' + itemId;
+
+    $.ajax({
+        method: "DELETE",
+        url: deleteURL
+    })
+    .then(function(data){
+        todo.remove();
+    });
+}
