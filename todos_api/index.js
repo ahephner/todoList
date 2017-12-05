@@ -12,8 +12,13 @@ var todoRoutes = require('./routes/todos');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+//tells express to use state page
+app.use(express.static(__dirname + '/views'));
+app.use(express.static(__dirname + '/public'));
+
+//root route
 app.get('/', function(req, res){
-        res.send("Hello from the Root");
+        res.sendFile('index.html');
     })
 
 //this is defining routes so it will be .com/api/todos then todoRoutes we define in routes
